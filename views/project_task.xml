@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <!--form view-->
+    <record id="view_project_task_form_inherit" model="ir.ui.view">
+        <field name="name">project.task.form.inherit</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+
+            <!-- Adding 'maintenance_request_id' to maintenance request form view -->
+            <xpath expr="//field[@name='user_ids']" position="after">
+                <field name="maintenance_request_id"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

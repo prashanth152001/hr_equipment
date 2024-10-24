@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <!-- form view -->
+    <record id="view_maintenance_equipment_form_inherit" model="ir.ui.view">
+        <field name="name">maintenance.equipment.form.inherit</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Adding 'product' to product information page -->
+            <xpath expr="//field[@name='partner_ref']" position="after">
+                <field name="product_id"/>
+            </xpath>
+
+            <!-- Adding 'status' field to form view -->
+            <xpath expr="//field[@name='location']" position="after">
+                <field name="equipment_status"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <!-- kanban view -->
+    <record id="view_maintenance_equipment_kanban_inherit" model="ir.ui.view">
+        <field name="name">maintenance.equipment.kanban.inherit</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_kanban"/>
+        <field name="arch" type="xml">
+
+            <!-- Grouping the kanban view according to status -->
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="default_group_by">category_id</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <!-- search view -->
+    <record id="view_maintenance_equipment_search_inherit" model="ir.ui.view">
+        <field name="name">maintenance.equipment.search.inherit</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_search"/>
+        <field name="arch" type="xml">
+
+            <!-- Adding filter for free & occupied status-->
+            <xpath expr="//filter[@name='under_maintenance']" position="before">
+                <filter string="Status-Free" name="free" domain="[('equipment_status', '=', 'free')]"/>
+                <filter string="Status-Occupied" name="free" domain="[('equipment_status', '=', 'occupy')]"/>
+            </xpath>
+
+            <!-- Adding group by for equipment status -->
+            <xpath expr="//filter[@name='vendor']" position="after">
+                <filter string="Status" name="status" domain="[]" context="{'group_by': 'equipment_status'}"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
+     <!-- tree view -->
+    <record id="view_maintenance_equipment_tree_inherit" model="ir.ui.view">
+        <field name="name">maintenance.equipment.tree.inherit</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_tree"/>
+        <field name="arch" type="xml">
+
+            <!-- Adding 'status' field to tree view -->
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="equipment_status"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

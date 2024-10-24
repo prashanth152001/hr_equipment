@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <!-- tree view -->
+    <record id="damage_details_tree_view" model="ir.ui.view">
+        <field name="name">damage.details.tree</field>
+        <field name="model">damage.details</field>
+        <field name="arch" type="xml">
+            <tree string="Damage Details">
+                <field name="maintenance_request_id"/>
+                <field name="date"/>
+                <field name="damage_description"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- form view -->
+    <record id="damage_details_form_view" model="ir.ui.view">
+        <field name="name">damage.details.form</field>
+        <field name="model">damage.details</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="maintenance_request_id"/>
+                            <field name="date"/>
+                            <field name="damage_description"/>
+                        </group>
+                        <group>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_damage_details" model="ir.actions.act_window">
+        <field name="name">Damage Details</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">damage.details</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

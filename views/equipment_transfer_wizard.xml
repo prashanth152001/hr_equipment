@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="equipment_transfer_wizard_form_view" model="ir.ui.view">
+        <field name="name">equipment.transfer.wizard.form</field>
+        <field name="model">equipment.transfer.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="assigned_to_id"/>
+                            <field name="previous_allocation_code_id"/>
+                        </group>
+                        <group>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Transfer" name="action_create_allocation_request"
+                            type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <!--form view-->
+    <record id="view_maintenance_request_form_inherit" model="ir.ui.view">
+        <field name="name">maintenance.request.form.inherit</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Replacing the header -->
+            <xpath expr="//header" position="replace">
+                <header>
+                    <button string="Submit" name="action_submit_new_request" type="object"
+                            class="oe_highlight" invisible="request_status != 'new_request'"/>
+                    <button string="Approve" name="action_approve_request" type="object"
+                            class="oe_highlight" invisible="request_status != 'wait_for_approval'"/>
+                    <button string="Confirm" name="action_confirm_request" type="object"
+                            class="oe_highlight" invisible="request_status != 'approved'"/>
+                    <button string="Process" name="action_process_request" type="object"
+                            class="oe_highlight" invisible="request_status != 'in_progress'"/>
+                    <button string="Scrap" name="action_equipment_scrap_request" type="object"
+                            class="oe_highlight" invisible="request_status != 'in_progress'"/>
+                    <button string="Create Invoice" name="action_create_invoice" type="object"
+                            class="oe_highlight" invisible="request_status != 'repaired'"/>
+                    <button string="Cancel" name="action_cancel_request" type="object"
+                            invisible="request_status in ['cancel','invoiced', 'scrap']"/>
+                    <field name="request_status" widget="statusbar" options="{'clickable': '1'}"
+                           statusbar_visible="new_request,wait_for_approval,approved,in_progress,repaired,scrap"/>
+                </header>
+            </xpath>
+
+            <!-- Adding Job Orders smart button -->
+            <xpath expr="//sheet//field[@name='kanban_state']" position="after">
+                <!-- smart buttons -->
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_open_job_orders" type="object" class="oe_stat_button"
+                            icon="fa-wrench">
+                        <field name="job_orders_count" widget="statinfo" string="Job Orders"/>
+                    </button>
+                    <button name="action_open_delivery_orders" type="object" class="oe_stat_button"
+                            icon="fa-truck">
+                        <field name="stock_movements_count" widget="statinfo" string="Pickings"/>
+                    </button>
+                    <button name="action_open_vendor_bills" type="object" class="oe_stat_button"
+                            icon="fa-money">
+                        <field name="expense_details_count" widget="statinfo" string="Vendor Bills"/>
+                    </button>
+                </div>
+            </xpath>
+
+            <!-- Adding domain for equipment_id field -->
+            <xpath expr="//field[@name='equipment_id']" position="attributes">
+                <attribute name="domain">[('equipment_status', '=', 'free')]</attribute>
+            </xpath>
+
+            <!-- Adding 'product' to maintenance request form view -->
+            <xpath expr="//field[@name='equipment_id']" position="after">
+                <field name="product_id"/>
+            </xpath>
+
+            <!-- Adding 'project' to maintenance request form view -->
+            <xpath expr="//field[@name='maintenance_team_id']" position="before">
+                <field name="project_id"/>
+            </xpath>
+
+            <!-- Damage details page -->
+            <xpath expr="//notebook//page[1]" position="after">
+                <page string="Components" name="components">
+                    <field name="component_line_ids">
+                        <tree string="Components" editable="bottom">
+                            <field name="product_id" string="Product"/>
+                            <field name="quantity"/>
+                            <field name="uom_id"/>
+                            <field name="currency_id" optional="hide"/>
+                            <field name="unit_price"/>
+                            <field name="taxes_ids" widget="many2many_tags"/>
+                            <field name="total_tax" optional="hide"/>
+                            <field name="subtotal"/>
+                        </tree>
+                    </field>
+                    <div class="row">
+                        <div class="fw-bolder">
+                            <group class="float-end">
+                                <field name="currency_id" invisible="1"/>
+                                <field name="components_total_amount" string="Total:" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            </group>
+                        </div>
+                    </div>
+                </page>
+
+                <page string="Stock Movements" name="stock_movements">
+                    <field name="stock_movement_line_ids">
+                        <tree string="Stock Movements" editable="bottom">
+                            <field name="name"/>
+                            <field name="picking_type_id"/>
+                            <field name="state" string="Order Status"/>
+                            <button name="action_view_moves" string="View Moves" type="object" class="oe_highlight"/>
+                        </tree>
+                    </field>
+                </page>
+
+
+                <page name="job_details" string="Job Details">
+                    <field name="job_details_line_ids">
+                        <tree editable="bottom" string="Job Details">
+                            <field name="priority" widget="priority"/>
+                            <field name="name"/>
+                            <field name="project_id"/>
+                            <field name="user_ids" widget="many2many_tags"/>
+                            <field name="company_id"/>
+                            <field name="total_hours_spent"/>
+                            <field name="progress"/>
+                            <field name="activity_ids" widget="many2many_tags"/>
+                            <field name="tag_ids" widget="many2many_tags"/>
+                            <field name="stage_id"/>
+                        </tree>
+                    </field>
+                    <div class="row">
+                        <div class="col-2 offset-10 text-end fw-bold">
+                            <group>
+                                <field name="hours_spent" string="Hours Spent"/>
+                            </group>
+                        </div>
+                    </div>
+                </page>
+
+                <page name="expense_details" string="Expense Details">
+                    <field name="expense_details_line_ids">
+                        <tree editable="bottom" string="Expense Details">
+                            <field name="name"/>
+                            <field name="invoice_date_due"/>
+                            <field name="activity_ids" widget="many2many_tags"/>
+                            <field name="currency_id" optional="hide"/>
+                            <field name="amount_untaxed"/>
+                            <field name="amount_total"/>
+                            <field name="payment_state"/>
+                            <field name="state"/>
+                        </tree>
+                    </field>
+                    <div class="row">
+                        <div class="fw-bolder">
+                            <group class="float-end text-end">
+                                <field name="currency_id" invisible="1"/>
+                                <field name="untaxed_expenses" string="Untaxed Amount:" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="taxed_expenses" string="Taxed Amount:" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="total_expenses" string="Total Amount:" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            </group>
+                        </div>
+                    </div>
+                </page>
+
+                <page name="damage_details" string="Damage Details">
+                    <field name="damage_details_ids">
+                        <tree editable="bottom" string="Damage Details">
+                            <field name="date"/>
+                            <field name="damage_description"/>
+                        </tree>
+                    </field>
+                </page>
+
+                <page name="checklist" string="Checklist">
+                    <field name="maintenance_checklist_ids">
+                        <tree editable="bottom" string="Checklist">
+                            <field name="name" string="Title/Name"/>
+                            <field name="check_description"/>
+                        </tree>
+                    </field>
+                </page>
+
+                <page name="additional_info" string="Additional Info">
+                    <group>
+                        <group name="location_details" string="Location Details">
+                            <field name="location_id"/>
+                            <field name="location_dest_id"/>
+                        </group>
+                        <group/>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_maintenance_request_kanban_inherit" model="ir.ui.view">
+        <field name="name">maintenance.request.kanban.inherit</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_kanban"/>
+        <field name="arch" type="xml">
+            <!-- Disable drag-and-drop in Kanban -->
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="records_draggable">false</attribute>
+                <attribute name="groups_draggable">false</attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

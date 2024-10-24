@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <!-- form view -->
+    <record id="all_allocations_form_view" model="ir.ui.view">
+        <field name="name">all.allocations.form</field>
+        <field name="model">all.allocations</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button string="Submit" name="action_submit_allocation_request"
+                            type="object" class="oe_highlight" invisible="selection_state != 'new'"/>
+                    <button string="Approve" name="action_approve_allocation_request"
+                            type="object" class="oe_highlight" invisible="selection_state != 'waiting_for_approval'"/>
+                    <button string="Allocate" name="action_allocate_equipment"
+                            type="object" class="oe_highlight" invisible="selection_state != 'approved'"/>
+                    <button string="Return" name="action_return_allocated_equipment"
+                            type="object" class="oe_highlight" invisible="selection_state != 'allocated'"/>
+                    <button string="Transfer" name="action_transfer_allocation_equipment"
+                            type="object" class="oe_highlight" invisible="selection_state != 'return'"/>
+                    <button string="Cancel" name="action_cancel_allocation_request"
+                            type="object" invisible="selection_state == 'cancel'"/>
+                    <button string="Set to Draft" name="action_set_to_draft"
+                            type="object" invisible="selection_state != 'cancel'"/>
+                    <field name="selection_state" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <!-- smart buttons -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_inventory_pickings" type="object" class="oe_stat_button"
+                                icon="fa-truck">
+                            <field name="inventory_pickings_count" widget="statinfo" string="Pickings"/>
+                        </button>
+                        <button name="action_open_transfer_allocations" type="object" class="oe_stat_button"
+                                icon="fa-exchange" invisible="transfer_wizard_id == False">
+                            <field name="transfers_count" widget="statinfo" string="Transfer Allocations"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="allocation_code" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="subject"/>
+                            <field name="assigned_to_id"/>
+                            <field name="department_id" invisible="selection_state != 'new'"/>
+                            <field name="job_position_id" invisible="selection_state != 'new'"/>
+                            <field name="equipment_id" domain="[('equipment_status', '=', 'free')]" invisible="selection_state in ('new', 'waiting_for_approval')"/>
+                            <field name="category_id" invisible="selection_state in ('new', 'waiting_for_approval')"/>
+                            <field name="product_id" invisible="selection_state in ('new', 'waiting_for_approval')"/>
+                            <field name="serial_no" invisible="selection_state in ('new', 'waiting_for_approval')"/>
+                            <field name="scheduled_date" invisible="selection_state in ('new', 'waiting_for_approval')"/>
+                            <field name="previous_allocation_code_id" invisible="transfer_wizard_id != False"/>
+                            <field name="transfer_wizard_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="allocation_status" widget="radio"/>
+                            <field name="create_date"/>
+                            <field name="created_by_id"/>
+                            <field name="approved_by_id"/>
+                            <field name="approved_date"/>
+                            <field name="priority_status"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page name="equipment_description" string="Description">
+                            <field name="description_notes"/>
+                        </page>
+                        <page name="other_information" string="Other Information">
+                            <group>
+                                <group>
+                                    <field name="warehouse_id"/>
+                                    <field name="source_id"/>
+                                    <field name="destination_id"/>
+                                </group>
+                                <group>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <!-- chatter section -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" options="{'open_attachments': True}"/>
+                    <field name="message_ids"/>
+                </div>
+
+            </form>
+        </field>
+    </record>
+
+    <!-- tree view -->
+    <record id="all_allocations_tree_view" model="ir.ui.view">
+        <field name="name">all.allocations.tree</field>
+        <field name="model">all.allocations</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="allocation_code"/>
+                <field name="allocation_status"/>
+                <field name="category_id"/>
+                <field name="assigned_to_id"/>
+                <field name="approved_by_id"/>
+                <field name="selection_state" string="State"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_all_allocations" model="ir.actions.act_window">
+        <field name="name">Allocations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">all.allocations</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_allocation_requests" model="ir.actions.act_window">
+        <field name="name">Allocation Requests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">all.allocations</field>
+        <field name="domain">[('selection_state', 'in', ['new', 'waiting_for_approval'])]</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_transfer_allocations" model="ir.actions.act_window">
+        <field name="name">Transfer Allocations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">all.allocations</field>
+        <field name="domain">[('selection_state', '=', 'transfer')]</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_return_allocations" model="ir.actions.act_window">
+        <field name="name">Return Allocations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">all.allocations</field>
+        <field name="domain">[('selection_state', '=', 'return')]</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

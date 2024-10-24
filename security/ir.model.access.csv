@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_all_allocations,all.allocations,model_all_allocations,,1,1,1,1
+access_equipment_transfer_wizard,equipment.transfer.wizard,model_equipment_transfer_wizard,,1,1,1,1
+access_damage_details,damage.details,model_damage_details,,1,1,1,1
+access_maintenance_checklist,maintenance.checklist,model_maintenance_checklist,,1,1,1,1
+access_maintenance_components,maintenance.components,model_maintenance_components,,1,1,1,1

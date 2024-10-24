@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <menuitem id="allocations_menu" name="Allocations" sequence="0"
+              parent="maintenance.menu_maintenance_title"/>
+    <menuitem id="allocation_requests_menu" name="Allocation Requests" sequence="1"
+          parent="allocations_menu" action="action_allocation_requests"/>
+    <menuitem id="all_allocations_menu" name="All Allocations" sequence="2"
+          parent="allocations_menu" action="action_all_allocations"/>
+    <menuitem id="transfer_allocations_menu" name="Transfer Allocations" sequence="3"
+          parent="allocations_menu" action="action_transfer_allocations"/>
+    <menuitem id="return_allocations_menu" name="Return Allocations" sequence="4"
+          parent="allocations_menu" action="action_return_allocations"/>
+    <menuitem id="hr.menu_hr_employee_user" name="Employees" sequence="5"
+          parent="allocations_menu"/>
+    <menuitem id="account.product_product_menu_sellable" name="Products" sequence="6"
+          parent="allocations_menu"/>
+
+    <menuitem id="damage_details_menu" name="Damage Details" sequence="10"
+              parent="maintenance.menu_m_request" action="action_damage_details"/>
+    <menuitem id="checklist_menu" name="Checklist" sequence="20"
+              parent="maintenance.menu_m_request" action="action_maintenance_checklist"/>
+
+
+</odoo>

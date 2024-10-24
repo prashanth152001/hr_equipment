@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Email Template for Maintenance Request Approval Notification -->
+        <record id="email_template_maintenance_request_approved" model="mail.template">
+            <field name="name">Maintenance: Request Approved</field>
+            <field name="model_id" ref="maintenance.model_maintenance_request"/>
+            <field name="subject">Your Maintenance Request: {{ object.name }} has been Approved</field>
+            <field name="email_from">{{ object.user_id.login or user.email }}</field>
+            <field name="email_to">{{ object.employee_id.work_email or '' }}</field>
+            <field name="description">Notification for the employee that their maintenance request has been approved by the manager.</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="font-size: 13px;">
+                        Dear <t t-out="object.employee_id.name or 'Employee'"/>,
+                    </p>
+                    <p>We are pleased to inform you that your maintenance request for the equipment <strong><t t-out="object.equipment_id.name or 'n/a'"/></strong> has been approved by the manager.</p>
+
+                    <p><strong>Request Details:</strong></p>
+                    <ul>
+                        <li><strong>Subject:</strong> <t t-out="object.name or 'n/a'"/></li>
+                        <li><strong>Description:</strong> <t t-out="object.description or 'n/a'"/></li>
+                        <li><strong>Request Date:</strong> <t t-out="object.request_date or 'n/a'"/></li>
+                        <li><strong>Project:</strong> <t t-out="object.project_id.name or 'n/a'"/></li>
+                        <li><strong>Maintenance Type:</strong> <t t-out="object.maintenance_type or 'n/a'"/></li>
+                        <li><strong>Maintenance Team:</strong> <t t-out="object.maintenance_team_id.name or 'n/a'"/></li>
+                        <li><strong>Category:</strong> <t t-out="object.category_id.name or 'n/a'"/></li>
+                        <li><strong>Equipment:</strong> <t t-out="object.equipment_id.name or 'n/a'"/></li>
+                        <li><strong>Priority:</strong> <t t-out="dict(object._fields['priority'].selection).get(object.priority, 'n/a')"/></li>
+                    </ul>
+
+                    <p>The maintenance team will now proceed with the required actions based on your request.</p>
+
+                    <p>If you have any questions or need further assistance, please do not hesitate to contact the maintenance team.</p>
+
+                    <p>Thank you,</p>
+                    <p>Maintenance Team</p>
+                </div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+    </data>
+</odoo>

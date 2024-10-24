@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Email Template for Equipment Allocation Notification -->
+        <record id="email_template_equipment_allocation_notification" model="mail.template">
+            <field name="name">Maintenance: Equipment Allocation Notification</field>
+            <field name="model_id" ref="model_all_allocations"/>
+            <field name="subject">Equipment Allocation: {{ object.allocation_code }}</field>
+            <field name="email_from">{{ object.approved_by_id.login or object.assigned_to_id.parent_id.work_email }}</field>
+            <field name="email_to">{{ object.assigned_to_id.work_email or '' }}</field>
+            <field name="description">Notification email for informing the employee about their equipment allocation.</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="font-size: 13px;">
+                        Dear <t t-out="object.assigned_to_id.name or 'Employee'"/>,
+                    </p>
+                    <p>We are pleased to inform you that the following equipment has been allocated to you:</p>
+
+                    <p><strong>Allocation Details:</strong></p>
+                    <ul>
+                        <li><strong>Allocation Code:</strong> <t t-out="object.allocation_code or 'n/a'"/></li>
+                        <li><strong>Equipment:</strong> <t t-out="object.equipment_id.name or 'n/a'"/></li>
+                        <li><strong>Product:</strong> <t t-out="object.product_id.name or 'n/a'"/></li>
+                        <li><strong>Serial Number:</strong> <t t-out="object.serial_no or 'n/a'"/></li>
+                        <li><strong>Priority:</strong> <t t-out="object.priority_status or 'Normal'"/></li>
+                        <li><strong>Department:</strong> <t t-out="object.department_id.name or 'n/a'"/></li>
+                        <li><strong>Job Position:</strong> <t t-out="object.job_position_id.name or 'n/a'"/></li>
+                        <li><strong>Warehouse:</strong> <t t-out="object.warehouse_id.name or 'n/a'"/></li>
+                        <li><strong>Source Location:</strong> <t t-out="object.source_id.name or 'n/a'"/></li>
+                    </ul>
+
+                    <p>Please collect your equipment from the HR department at your earliest convenience.</p>
+
+                    <p>If you have any questions or need further assistance, please don't hesitate to reach out.</p>
+
+                    <p>Best regards,</p>
+                    <p><t t-out="object.created_by_id.name or 'HR Team'"/></p>
+                </div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+    </data>
+</odoo>

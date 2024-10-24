@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Email Template for Equipment Return Notification -->
+        <record id="email_template_equipment_return_notification" model="mail.template">
+            <field name="name">Maintenance: Equipment Return Notification</field>
+            <field name="model_id" ref="model_all_allocations"/>
+            <field name="subject">Equipment Return: {{ object.allocation_code }}</field>
+            <field name="email_from">{{ object.assigned_to_id.work_email or user.email }}</field>
+            <field name="email_to">{{ object.assigned_to_id.parent_id.work_email or '' }}</field>
+            <field name="description">Notification email for informing the manager about the return of allocated equipment.</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="font-size: 13px;">
+                        Dear <t t-out="object.assigned_to_id.parent_id.name or 'Manager'"/>,
+                    </p>
+                    <p>We would like to inform you that the following equipment previously allocated to <t t-out="object.assigned_to_id.name or 'the employee'"/> has been returned:</p>
+
+                    <p><strong>Return Details:</strong></p>
+                    <ul>
+                        <li><strong>Allocation Code:</strong> <t t-out="object.allocation_code or 'n/a'"/></li>
+                        <li><strong>Category:</strong> <t t-out="object.category_id.name or 'n/a'"/></li>
+                        <li><strong>Equipment:</strong> <t t-out="object.equipment_id.name or 'n/a'"/></li>
+                        <li><strong>Product:</strong> <t t-out="object.product_id.name or 'n/a'"/></li>
+                        <li><strong>Serial Number:</strong> <t t-out="object.serial_no or 'n/a'"/></li>
+                        <li><strong>Department:</strong> <t t-out="object.department_id.name or 'n/a'"/></li>
+                        <li><strong>Job Position:</strong> <t t-out="object.job_position_id.name or 'n/a'"/></li>
+                    </ul>
+
+                    <p>If you have any questions or need further information, please contact us.</p>
+
+                    <p>Thank you,</p>
+                    <p><t t-out="object.assigned_to_id.name or 'Employee'"/></p>
+                </div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+    </data>
+</odoo>

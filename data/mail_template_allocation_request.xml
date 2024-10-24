@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Email Template for Equipment Allocation Approval Request -->
+        <record id="email_template_equipment_allocation_approval_request" model="mail.template">
+            <field name="name">Maintenance: Equipment Allocation Approval Request</field>
+            <field name="model_id" ref="model_all_allocations"/>
+            <field name="subject">Request for Approval: Equipment Allocation {{ object.allocation_code }}</field>
+            <field name="email_from">{{ object.assigned_to_id.work_email or object.created_by_id.login }}</field>
+            <field name="email_to">{{ object.assigned_to_id.parent_id.work_email or '' }}</field>
+            <field name="description">Email template for requesting manager's approval of an equipment allocation.</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="font-size: 13px;">
+                        Dear <t t-out="object.assigned_to_id.parent_id.name or 'Manager'"/>,
+                    </p>
+                    <p>A new equipment allocation request has been submitted and is awaiting your approval.</p>
+
+                    <p><strong>Allocation Details:</strong></p>
+                    <ul>
+                        <li><strong>Allocation Code:</strong> <t t-out="object.allocation_code or 'n/a'"/></li>
+                        <li><strong>Subject:</strong> <t t-out="object.subject or 'n/a'"/></li>
+                        <li><strong>Assigned To:</strong> <t t-out="object.assigned_to_id.name or 'n/a'"/></li>
+                        <li><strong>Created date:</strong> <t t-out="object.create_date or 'n/a'"/></li>
+                        <li><strong>Priority:</strong> <t t-out="object.priority_status or 'n/a'"/></li>
+                        <li><strong>Department:</strong> <t t-out="object.department_id.name or 'n/a'"/></li>
+                        <li><strong>Job Position:</strong> <t t-out="object.job_position_id.name or 'n/a'"/></li>
+                        <li><strong>Description:</strong> <t t-out="object.description_notes or 'n/a'"/></li>
+                    </ul>
+
+                    <p>Please review the details and approve the request.</p>
+
+                    <p>Thank you,</p>
+                    <p><t t-out="object.created_by_id.name or ''"/></p>
+                </div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+    </data>
+</odoo>
