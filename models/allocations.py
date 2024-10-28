@@ -39,8 +39,8 @@ class AllAllocations(models.Model):
     scheduled_date = fields.Datetime(string='Scheduled Date')
     previous_allocation_code_id = fields.Many2one(comodel_name='all.allocations', string='Allocation')
     transfer_wizard_id = fields.Many2one(comodel_name='equipment.transfer.wizard', string='Transfer Allocation')
-    transfers_count = fields.Float(string='Transfers Count', compute='_compute_transfers_count')
-    inventory_pickings_count = fields.Float(compute='_compute_inventory_pickings_count')
+    transfers_count = fields.Integer(string='Transfers Count', compute='_compute_transfers_count')
+    inventory_pickings_count = fields.Integer(compute='_compute_inventory_pickings_count')
 
     @api.onchange('assigned_to_id')
     def _onchange_assigned_to_id(self):
@@ -195,3 +195,14 @@ class AllAllocations(models.Model):
     def action_set_to_draft(self):
         for rec in self:
             rec.selection_state = 'new'
+
+    # List view approve button action
+    def action_approve_selected_allocation_requests(self):
+        for rec in self:
+            if rec.selection_state == 'waiting_for_approval':
+                rec.selection_state = 'approved'
+                rec.approved_by_id = self.env.user.id
+                rec.approved_date = datetime.today()
+                template = rec.env.ref('hr_equipment.email_template_equipment_allocation_approval_request')
+                template.send_mail(rec.id)
+        return True

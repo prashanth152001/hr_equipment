@@ -14,15 +14,19 @@
                     <button string="Submit" name="action_submit_new_request" type="object"
                             class="oe_highlight" invisible="request_status != 'new_request'"/>
                     <button string="Approve" name="action_approve_request" type="object"
-                            class="oe_highlight" invisible="request_status != 'wait_for_approval'"/>
+                            class="oe_highlight" invisible="request_status != 'wait_for_approval'"
+                            groups="maintenance.group_equipment_manager"/>
                     <button string="Confirm" name="action_confirm_request" type="object"
                             class="oe_highlight" invisible="request_status != 'approved'"/>
                     <button string="Process" name="action_process_request" type="object"
-                            class="oe_highlight" invisible="request_status != 'in_progress'"/>
+                            class="oe_highlight" invisible="request_status != 'in_progress'"
+                            groups="maintenance.group_equipment_manager"/>
                     <button string="Scrap" name="action_equipment_scrap_request" type="object"
-                            class="oe_highlight" invisible="request_status != 'in_progress'"/>
+                            class="oe_highlight" invisible="request_status != 'in_progress'"
+                            groups="maintenance.group_equipment_manager"/>
                     <button string="Create Invoice" name="action_create_invoice" type="object"
-                            class="oe_highlight" invisible="request_status != 'repaired'"/>
+                            class="oe_highlight" invisible="request_status != 'repaired'"
+                            groups="maintenance.group_equipment_manager"/>
                     <button string="Cancel" name="action_cancel_request" type="object"
                             invisible="request_status in ['cancel','invoiced', 'scrap']"/>
                     <field name="request_status" widget="statusbar" options="{'clickable': '1'}"
@@ -182,6 +186,7 @@
         </field>
     </record>
 
+    <!-- Kanban view -->
     <record id="view_maintenance_request_kanban_inherit" model="ir.ui.view">
         <field name="name">maintenance.request.kanban.inherit</field>
         <field name="model">maintenance.request</field>
@@ -195,5 +200,20 @@
         </field>
     </record>
 
+    <!-- Tree view -->
+    <record id="view_maintenance_request_tree_inherit" model="ir.ui.view">
+        <field name="name">maintenance.request.tree.inherit</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_tree"/>
+        <field name="arch" type="xml">
+            <!-- Adding Approve request button in header -->
+            <xpath expr="//tree" position="inside">
+                <header>
+                    <button string="Approve Requests" name="action_approve_selected_maintenance_requests"
+                            type="object" class="btn-secondary" groups="maintenance.group_equipment_manager"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
 
 </odoo>

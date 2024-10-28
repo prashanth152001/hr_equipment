@@ -1,25 +1,112 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
 
-    <menuitem id="allocations_menu" name="Allocations" sequence="0"
+    <!-- Creating a new menu for Alloactions -->
+    <menuitem id="allocations_menu"
+              name="Allocations"
+              sequence="0"
               parent="maintenance.menu_maintenance_title"/>
-    <menuitem id="allocation_requests_menu" name="Allocation Requests" sequence="1"
-          parent="allocations_menu" action="action_allocation_requests"/>
-    <menuitem id="all_allocations_menu" name="All Allocations" sequence="2"
-          parent="allocations_menu" action="action_all_allocations"/>
-    <menuitem id="transfer_allocations_menu" name="Transfer Allocations" sequence="3"
-          parent="allocations_menu" action="action_transfer_allocations"/>
-    <menuitem id="return_allocations_menu" name="Return Allocations" sequence="4"
-          parent="allocations_menu" action="action_return_allocations"/>
-    <menuitem id="hr.menu_hr_employee_user" name="Employees" sequence="5"
-          parent="allocations_menu"/>
-    <menuitem id="account.product_product_menu_sellable" name="Products" sequence="6"
-          parent="allocations_menu"/>
+    <!-- Creating the menu items for Allocations menu -->
+    <menuitem id="allocation_requests_menu"
+              name="Allocation Requests"
+              sequence="1"
+              parent="allocations_menu"
+              groups = "maintenance.group_equipment_manager"
+              action="action_allocation_requests"/>
+    <menuitem id="all_allocations_menu"
+              name="All Allocations"
+              sequence="2"
+              parent="allocations_menu"
+              groups = "group_equipment_employee,maintenance.group_equipment_manager"
+              action="action_all_allocations"/>
+    <menuitem id="transfer_allocations_menu"
+              name="Transfer Allocations"
+              sequence="3"
+              parent="allocations_menu"
+              groups = "maintenance.group_equipment_manager"
+              action="action_transfer_allocations"/>
+    <menuitem id="return_allocations_menu"
+              name="Return Allocations"
+              sequence="4"
+              parent="allocations_menu"
+              groups = "maintenance.group_equipment_manager"
+              action="action_return_allocations"/>
+    <menuitem id="hr.menu_hr_employee_user"
+              name="Employees"
+              sequence="5"
+              parent="allocations_menu"
+              groups = "maintenance.group_equipment_manager"/>
+    <menuitem id="account.product_product_menu_sellable"
+              name="Products"
+              sequence="6"
+              parent="allocations_menu"
+              groups = "maintenance.group_equipment_manager"/>
 
-    <menuitem id="damage_details_menu" name="Damage Details" sequence="10"
-              parent="maintenance.menu_m_request" action="action_damage_details"/>
-    <menuitem id="checklist_menu" name="Checklist" sequence="20"
-              parent="maintenance.menu_m_request" action="action_maintenance_checklist"/>
+    <!-- Adding Damage details menu item and Checklist menu item to Maintenance menu -->
+    <menuitem id="damage_details_menu"
+              name="Damage Details"
+              sequence="10"
+              parent="maintenance.menu_m_request"
+              groups = "maintenance.group_equipment_manager"
+              action="action_damage_details"/>
+    <menuitem id="checklist_menu"
+              name="Checklist"
+              sequence="20"
+              parent="maintenance.menu_m_request"
+              groups = "maintenance.group_equipment_manager"
+              action="action_maintenance_checklist"/>
 
+    <!-- Update the Dashboard menu item to include the new groups -->
+    <record id="maintenance.menu_m_dashboard" model="ir.ui.menu">
+        <field name="groups_id"
+               eval="[(4, ref('maintenance.group_equipment_manager'))]"/>
+    </record>
 
+    <!-- Update the Maintenance menu item to include the new groups -->
+    <record id="maintenance.menu_m_request" model="ir.ui.menu">
+        <field name="groups_id"
+               eval="[(4, ref('hr_equipment.group_equipment_employee')), (4, ref('maintenance.group_equipment_manager'))]"/>
+    </record>
+
+    <!-- Update the Maintenance Request menu item to include the new groups -->
+    <record id="maintenance.menu_m_request_form" model="ir.ui.menu">
+        <field name="groups_id"
+               eval="[(4, ref('hr_equipment.group_equipment_employee')), (4, ref('maintenance.group_equipment_manager'))]"/>
+    </record>
+
+    <!-- Update the Maintenance Calendar menu item to include the new groups -->
+    <record id="maintenance.menu_m_request_calendar" model="ir.ui.menu">
+        <field name="groups_id"
+               eval="[(4, ref('hr_equipment.group_equipment_employee')), (4, ref('maintenance.group_equipment_manager'))]"/>
+    </record>
+
+    <!-- Update the Equipment menu item to include the new groups -->
+    <record id="maintenance.menu_equipment_form" model="ir.ui.menu">
+        <field name="groups_id"
+               eval="[(4, ref('hr_equipment.group_equipment_employee')), (4, ref('maintenance.group_equipment_manager'))]"/>
+    </record>
+
+    <!-- Update the Reporting menu item to include the new groups -->
+    <record id="maintenance.maintenance_reporting" model="ir.ui.menu">
+        <field name="groups_id"
+               eval="[(4, ref('maintenance.group_equipment_manager'))]"/>
+    </record>
+
+    <!-- Update the Maintenance Requests menu item to include the new groups -->
+    <record id="maintenance.maintenance_request_reporting" model="ir.ui.menu">
+        <field name="groups_id"
+               eval="[(4, ref('maintenance.group_equipment_manager'))]"/>
+    </record>
+
+     <!-- Update the Maintenance Stages menu item to include the new groups -->
+    <record id="maintenance.menu_maintenance_stage_configuration" model="ir.ui.menu">
+        <field name="groups_id"
+               eval="[(4, ref('maintenance.group_equipment_manager'))]"/>
+    </record>
+
+    <!-- Update the Activity Types menu item to include the new groups -->
+    <record id="maintenance.maintenance_menu_config_activity_type" model="ir.ui.menu">
+        <field name="groups_id"
+               eval="[(4, ref('maintenance.group_equipment_manager'))]"/>
+    </record>
 </odoo>

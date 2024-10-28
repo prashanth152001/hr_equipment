@@ -9,7 +9,8 @@
     'license': 'LGPL-3',
     'category': 'Maintenance',
 
-    'data': ['security/ir.model.access.csv',
+    'data': ['security/hr_equipment.xml',
+             'security/ir.model.access.csv',
              'data/sequence.xml',
              'data/mail_template_allocation_request.xml',
              'data/mail_template_allocation_approved.xml',
@@ -42,4 +43,5 @@
     'installable': True,
     'application': True,
     'auto_install': False,
+    'description': 'This module is used to manage the equipments allocated to employees.',
 }

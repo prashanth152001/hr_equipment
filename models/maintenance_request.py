@@ -32,15 +32,15 @@ class MaintenanceRequest(models.Model):
     job_details_line_ids = fields.One2many(comodel_name='project.task', inverse_name='maintenance_request_id',
                                            string='Job Details')
     hours_spent = fields.Float(string='Hours Spent', compute='_compute_hours_spent')
-    job_orders_count = fields.Float(string='Job Orders Count', compute='_compute_job_orders_count')
+    job_orders_count = fields.Integer(string='Job Orders Count', compute='_compute_job_orders_count')
     stock_movement_line_ids = fields.One2many(comodel_name='stock.picking',
                                               inverse_name='maintenance_request_id',
                                               string='Stock Movement Lines')
-    stock_movements_count = fields.Float(string='Stock Movements Count', compute='_compute_stock_movements_count')
+    stock_movements_count = fields.Integer(string='Stock Movements Count', compute='_compute_stock_movements_count')
     expense_details_line_ids = fields.One2many(comodel_name='account.move',
                                                inverse_name='maintenance_request_id',
                                                string='Expense Details Lines')
-    expense_details_count = fields.Float(string='Expense Details Count', compute='_compute_expense_details_count')
+    expense_details_count = fields.Integer(string='Expense Details Count', compute='_compute_expense_details_count')
     untaxed_expenses = fields.Monetary(string='Untaxed Expenses', compute='_compute_total_expenses',
                                        store=True, currency_field='currency_id')
     taxed_expenses = fields.Monetary(string='Taxed Expenses', compute='_compute_total_expenses',
@@ -140,11 +140,6 @@ class MaintenanceRequest(models.Model):
             rec.request_status = 'approved'
             rec.stage_id = self.env['maintenance.stage'].search([('name', '=', 'Approved')], limit=1)
             rec.equipment_id.equipment_status = 'maintenance'
-
-            # Find the picking type for delivery orders (outgoing shipments)
-            picking_type = rec.env['stock.picking.type'].search([
-                ('code', '=', 'outgoing')
-            ], limit=1)
         template = self.env.ref('hr_equipment.email_template_maintenance_request_approved')
         template.send_mail(self.id)
 
@@ -249,3 +244,14 @@ class MaintenanceRequest(models.Model):
         for rec in self:
             rec.request_status = 'cancel'
             rec.stage_id = self.env['maintenance.stage'].search([('name', '=', 'Cancel')], limit=1)
+
+    # Approve selected requests in tree view
+    def action_approve_selected_maintenance_requests(self):
+        for rec in self:
+            if rec.request_status == 'wait_for_approval':
+                rec.request_status = 'approved'
+                rec.stage_id = self.env['maintenance.stage'].search([('name', '=', 'Approved')], limit=1)
+                rec.equipment_id.equipment_status = 'maintenance'
+                template = rec.env.ref('hr_equipment.email_template_maintenance_request_approved')
+                template.send_mail(rec.id)
+        return True

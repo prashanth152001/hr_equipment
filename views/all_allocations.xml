@@ -11,17 +11,21 @@
                     <button string="Submit" name="action_submit_allocation_request"
                             type="object" class="oe_highlight" invisible="selection_state != 'new'"/>
                     <button string="Approve" name="action_approve_allocation_request"
-                            type="object" class="oe_highlight" invisible="selection_state != 'waiting_for_approval'"/>
+                            type="object" class="oe_highlight" invisible="selection_state != 'waiting_for_approval'"
+                            groups="maintenance.group_equipment_manager"/>
                     <button string="Allocate" name="action_allocate_equipment"
-                            type="object" class="oe_highlight" invisible="selection_state != 'approved'"/>
+                            type="object" class="oe_highlight" invisible="selection_state != 'approved'"
+                            groups="maintenance.group_equipment_manager"/>
                     <button string="Return" name="action_return_allocated_equipment"
                             type="object" class="oe_highlight" invisible="selection_state != 'allocated'"/>
                     <button string="Transfer" name="action_transfer_allocation_equipment"
-                            type="object" class="oe_highlight" invisible="selection_state != 'return'"/>
+                            type="object" class="oe_highlight" invisible="selection_state != 'return'"
+                            groups="maintenance.group_equipment_manager"/>
                     <button string="Cancel" name="action_cancel_allocation_request"
                             type="object" invisible="selection_state == 'cancel'"/>
                     <button string="Set to Draft" name="action_set_to_draft"
-                            type="object" invisible="selection_state != 'cancel'"/>
+                            type="object" invisible="selection_state != 'cancel'"
+                            groups="maintenance.group_equipment_manager"/>
                     <field name="selection_state" widget="statusbar" options="{'clickable': '1'}"/>
                 </header>
                 <sheet>
@@ -100,6 +104,10 @@
         <field name="model">all.allocations</field>
         <field name="arch" type="xml">
             <tree>
+                <header>
+                    <button string="Approve Requests" name="action_approve_selected_allocation_requests"
+                            type="object" class="btn-secondary" groups="maintenance.group_equipment_manager"/>
+                </header>
                 <field name="allocation_code"/>
                 <field name="allocation_status"/>
                 <field name="category_id"/>
@@ -121,7 +129,7 @@
         <field name="name">Allocation Requests</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">all.allocations</field>
-        <field name="domain">[('selection_state', 'in', ['new', 'waiting_for_approval'])]</field>
+        <field name="domain">[('selection_state', 'in', ['waiting_for_approval'])]</field>
         <field name="view_mode">tree,form</field>
     </record>
 
