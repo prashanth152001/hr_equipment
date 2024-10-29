@@ -52,7 +52,9 @@
                             <field name="assigned_to_id"/>
                             <field name="department_id" invisible="selection_state != 'new'"/>
                             <field name="job_position_id" invisible="selection_state != 'new'"/>
-                            <field name="equipment_id" domain="[('equipment_status', '=', 'free')]" invisible="selection_state in ('new', 'waiting_for_approval')"/>
+                            <field name="equipment_domain" invisible="1"/>
+<!--                            <field name="equipment_id" domain="[('equipment_status', '=', 'free'),('processor_type', 'in', ['1','2','3'])]" invisible="selection_state in ('new', 'waiting_for_approval')"/>-->
+                            <field name="equipment_id" domain="equipment_domain" invisible="selection_state in ('new', 'waiting_for_approval')"/>
                             <field name="category_id" invisible="selection_state in ('new', 'waiting_for_approval')"/>
                             <field name="product_id" invisible="selection_state in ('new', 'waiting_for_approval')"/>
                             <field name="serial_no" invisible="selection_state in ('new', 'waiting_for_approval')"/>

@@ -14,5 +14,8 @@ class ProductProduct(models.Model):
             'technician_user_id': self.technician_id.id,
             'serial_no': lot.name,  # Serial number from lot
             'product_id': self.id,
+            'processor_type': self.processor_type,
+            'ram_size': self.ram_size,
+            'rom_size': self.rom_size,
         }
         self.env['maintenance.equipment'].create(equipment_vals)

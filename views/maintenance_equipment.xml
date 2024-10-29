@@ -8,6 +8,14 @@
         <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
         <field name="arch" type="xml">
 
+            <!-- Adding 'specifications' to form view -->
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="show_laptop_fields" invisible="1"/>
+                <field name="processor_type" invisible="show_laptop_fields == False"/>
+                <field name="ram_size" invisible="show_laptop_fields == False"/>
+                <field name="rom_size" invisible="show_laptop_fields == False"/>
+            </xpath>
+
             <!-- Adding 'product' to product information page -->
             <xpath expr="//field[@name='partner_ref']" position="after">
                 <field name="product_id"/>

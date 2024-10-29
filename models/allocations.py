@@ -41,12 +41,29 @@ class AllAllocations(models.Model):
     transfer_wizard_id = fields.Many2one(comodel_name='equipment.transfer.wizard', string='Transfer Allocation')
     transfers_count = fields.Integer(string='Transfers Count', compute='_compute_transfers_count')
     inventory_pickings_count = fields.Integer(compute='_compute_inventory_pickings_count')
+    equipment_domain = fields.Char(string='Domain')
 
     @api.onchange('assigned_to_id')
     def _onchange_assigned_to_id(self):
         for rec in self:
             rec.department_id = rec.assigned_to_id.department_id
             rec.job_position_id = rec.assigned_to_id.job_id
+
+        # Default domain for equipment
+        domain = [('equipment_status', '=', 'free')]
+        job_id = self.assigned_to_id.job_id
+
+        # Adjust domain based on job position
+        if job_id:
+            if 'Developer' in job_id.name:
+                domain.append(('processor_type', '>=', '1'))  # Allow i5, i7, i9
+                domain.append(('ram_size', '>=', '1'))  # Allow 8GB, 16GB
+                domain.append(('rom_size', '>=', '1'))  # Allow 512GB, 1TB
+            elif 'Consultant' in job_id.name:
+                domain.append(('processor_type', '<=', '1'))  # Allow i3, i5
+                domain.append(('ram_size', '<=', '1'))  # Allow 4GB, 8GB
+                domain.append(('rom_size', '<=', '1'))  # Allow 256GB, 512GB
+        self.equipment_domain = domain
 
     @api.onchange('equipment_id')
     def _onchange_equipment_id(self):
@@ -85,13 +102,23 @@ class AllAllocations(models.Model):
             'domain': [('previous_allocation_code_id', '=', self.id)],
         }
 
+    # Sequence creation
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
+            # Get creation date
+            creation_date = vals.get('create_date') or fields.Datetime.now()
+            creation_date = fields.Datetime.from_string(creation_date)
+
+            # Format year and month
+            year_month = creation_date.strftime('%Y/%m')
+
+            # Generate sequence with year-month in the allocation code
             if not vals.get('allocation_code') or vals['allocation_code'] == 'New':
-                vals['allocation_code'] = self.env['ir.sequence'].next_by_code('all.allocations')
+                sequence = self.env['ir.sequence'].next_by_code('all.allocations')
+                vals['allocation_code'] = f"{sequence}/{year_month}"
             vals['created_by_id'] = self.env.user.id
-        return super().create(vals_list)
+        return super(AllAllocations, self).create(vals_list)
 
     def action_submit_allocation_request(self):
         for rec in self:

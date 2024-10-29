@@ -25,6 +25,10 @@
                             <field name="used_by"/>
                         </group>
                         <group>
+                            <field name="show_laptop_fields" invisible="1"/>
+                            <field name="processor_type" invisible="show_laptop_fields == False"/>
+                            <field name="ram_size" invisible="show_laptop_fields == False"/>
+                            <field name="rom_size" invisible="show_laptop_fields == False"/>
                         </group>
                     </group>
                 </page>
